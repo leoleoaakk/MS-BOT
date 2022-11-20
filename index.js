@@ -85,7 +85,7 @@ client.on("ready", () => {
 
 client.on("message", async msg => {
 
-  const q = [6, 20, 100];
+  const q = [3, 20, 100];
   // 如果訊息的內容包含 '!曬卡'
   if (msg.content.indexOf(`!曬卡`) > -1 && msg.content != "!曬卡機率") {
     // 則 Bot 回應 ''
