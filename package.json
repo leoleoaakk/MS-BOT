@@ -1,0 +1,30 @@
+{
+	"main": "index.js",
+	"dependencies": {
+		"@discordjs/opus": "^0.7.0",
+		"@short-url/shorturl": "^1.0.1",
+		"canvas": "^2.8.0",
+		"chart.js": "^3.5.1",
+		"chartjs": "^0.3.24",
+		"chartjs-node-canvas": "^4.1.4",
+		"chartjs-plugin-datalabels": "^2.0.0",
+		"cuttly": "^1.0.1",
+		"discord-welcome": "^3.0.3",
+		"discord.js": "^12.5.3",
+		"dotenv": "^16.0.3",
+		"express": "^4.17.1",
+		"ffmpeg-static": "^4.4.0",
+		"mysql": "^2.18.1",
+		"node-fetch": "^2.0.0",
+		"node-url-shortener": "^2.0.0",
+		"open": "^8.2.1",
+		"prettylink": "^1.0.0",
+		"quickchart-js": "^1.4.2",
+		"shortener": "^0.1.0",
+		"shorturl": "0.0.3",
+		"tinyurl": "^1.1.7",
+		"url-minify": "^2.2.12",
+		"v11-discord.js": "^11.5.8",
+		"ytdl-core": "^4.9.1"
+	}
+}
