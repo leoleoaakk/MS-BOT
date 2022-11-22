@@ -135,6 +135,72 @@ client.on("message", async msg => {
     msg.channel.send(`彩色${pride}% 金色${gold}% 普通${normal}%`);
   }
 
+  if(msg.content.includes("!編號")){
+    msg.content = msg.content.replace("!編號", "");
+    let pokedex=msg.content;
+    let wikiURL="https://wiki.52poke.com/zh-hant/%E5%AE%9D%E5%8F%AF%E6%A2%A6%E5%88%97%E8%A1%A8%EF%BC%88%E6%8C%89%E5%85%A8%E5%9B%BD%E5%9B%BE%E9%89%B4%E7%BC%96%E5%8F%B7%EF%BC%89";
+    let pokeURL="https://tw.portal-pokemon.com/play/pokedex/"+pokedex;
+    const _constdata = await getRawData(wikiURL);
+    const _constdata2 = await getRawData(pokeURL);
+    let data = _constdata;
+    let imgData = _constdata2;
+    let errtop=imgData.search('<div class="page-other__heading">')+33;
+    let errJU=imgData.substr(errtop,14);
+    if(errJU != "Page not found"){
+      let index_top=data.search("<td>#"+pokedex);
+      data=data.substr(index_top);
+      //<a href="/wiki/%E5%A6%99%E8%9B%99%E7%A7%8D%E5%AD%90" title="妙蛙種子"><span class="sprite-icon sprite-icon-001" title="妙蛙種子"></span></a>
+      index_top=data.search('<a href="/wiki')+14;
+      let index_bottom=data.search('" title=');
+      data=data.substr(index_top,index_bottom-index_top);
+    
+      let wikiURL_2 = "https://wiki.52poke.com/zh-hant" + data;
+      const _constdata3 = await getRawData(wikiURL_2);
+      data = _constdata3;
+      index_top=data.search('<span style="font-size:1.5em"><b>')+33;
+      data = data.substr(index_top);
+      index_bottom = data.search("</b>");
+      let Name = data.substr(0, index_bottom);
+
+      index_top= imgData.search('<img class="pokemon-img__front"')+37;
+      let imgURL = imgData.substr(index_top);
+      index_bottom = imgURL.search('">');
+      imgURL = imgURL.substr(0, index_bottom);
+      imgURL = "https://tw.portal-pokemon.com"+imgURL;
+      msg.channel.send(Name+"\n"+imgURL);
+      //console.log(imgURL);
+    }
+    else
+      msg.channel.send("查無資料！請確認輸入編號是否正確");
+  }
+
+  if (msg.content.includes("!圖鍵編號")) {
+    msg.content = msg.content.replace("!圖鍵編號", "");
+    let pokedex=msg.content;
+    let pokeURL="https://tw.portal-pokemon.com/play/pokedex/"+pokedex;
+    const _constdata = await getRawData(pokeURL);
+    let data = _constdata;
+    
+    let errtop=data.search('<div class="page-other__heading">')+33;
+    let errJU=data.substr(errtop,14);
+    if(errJU != "Page not found"){
+      let index_top= data.search('<p class="pokemon-slider__main-name')+45;
+      let Name = data.substr(index_top);
+      let index_bottom = Name.search("</p>");
+      Name = Name.substr(0, index_bottom);
+
+      index_top= data.search('<img class="pokemon-img__front"')+37;
+      let imgURL = data.substr(index_top);
+      index_bottom = imgURL.search('">');
+      imgURL = imgURL.substr(0, index_bottom);
+      imgURL = "https://tw.portal-pokemon.com"+imgURL;
+
+      msg.channel.send(Name+"\n"+imgURL);
+    }
+    else
+      msg.channel.send("查無資料！請確認輸入編號是否正確");
+      
+  }
 
   if (msg.channel.id === "900260479535034400" ||
     msg.channel.id === "900332902376689695") {
@@ -170,7 +236,6 @@ client.on("message", async msg => {
         const _constdata = await getRawData(URL);
         let data = _constdata;
         for (let i = 0; i < 26; i++) {
-
           let index_bottom = data.search("元</b>");
           data = data.substr(index_bottom - 10);
           let index_top = data.search("<b>") + 3;
