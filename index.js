@@ -98,7 +98,7 @@ client.on("message", async msg => {
 
   const q = [3, 20, 100];
   // 如果訊息的內容包含 '!曬卡'
-  if (msg.content.indexOf(`!曬卡`) > -1 && msg.content != "!曬卡機率") {
+  if (msg.content.indexOf(`!曬卡`) > -1 && msg.content != "!曬卡機率" && msg.content != "!曬卡 作弊") {
     // 則 Bot 回應 ''
     let e = ["<:anyapride:1043167915085672528>",
       "<:anyaGold:1043167887482945626>",
@@ -126,6 +126,18 @@ client.on("message", async msg => {
     msg.channel.send(t);
     if (s > 18)
       msg.channel.send("(保底)");
+  }
+
+  if (msg.content === (`!曬卡 作弊`)){
+    let e = "<:anyapride:1043167915085672528>";
+    let t = "";
+    for (let i = 0; i < 10; i++) {
+      t += e;
+    }
+
+    msg.channel.send(`${msg.member.displayName} -> 作弊`);
+    msg.channel.send(t);
+    msg.channel.send("(保底十彩)");
   }
 
   if (msg.content === "!曬卡機率") {
