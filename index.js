@@ -87,13 +87,18 @@ client.on("message", async msg => {
 
   if (msg.content === "!蒼彼"){
     msg.channel.send("《蒼之彼方的四重奏》是由sprite在2014年發售的一款成人向美少女遊戲。\n"+
-    "故事圍繞在名為「Flying Circus」（簡稱FC）的虛構運動上，這是一種使用反重力鞋在空中進行的競技運動。\n"+
-    "劇情便是在講述主角日向晶也與社團夥伴們在這個競技上交織成的一部熱血、青春的戀愛物語。\n"+
+    "劇情圍繞在名為「Flying Circus」（簡稱FC）的虛構運動上，這是一種使用反重力鞋在空中進行的競技運動。\n"+
+    "遊戲講述了主角日向晶也與社團夥伴們在這個競技上交織成的一部熱血、青春的戀愛物語。\n"+
     "本作在2016年1月動畫化，並於2016年2月發售全年齡版本至PSV上，隨後也發售了PS4、NS等版本。\n"+
     "2019年9月登上steam，並且有日文、英文、繁中、簡中四種語言可以選擇。\n"+
     "steam發售頁面：https://store.steampowered.com/app/1044620/");
     msg.channel.send("???：我認為每個人都應該玩過一遍蒼彼，一起來感受真白有多麼可愛。\n"+
     "https://i.imgur.com/2jR5xEZ.jpg");
+  }
+
+  if (msg.content === "!韓職"){
+    msg.channel.send(`Twitch: https://www.twitch.tv/kartrideresports`);
+    msg.channel.send(`Youtube: https://www.youtube.com/@kartrideresports`);
   }
 
   const q = [3, 20, 100];
@@ -2140,13 +2145,13 @@ class Music {
 
     // 如果 Bot 還沒加入該語音群的語音頻道
     if (!this.connection[guildID]) {
-      msg.channel.send('請先將機器人 `!!join` 加入頻道');
+      msg.channel.send(`請先將機器人 ${prefix}join 加入頻道`);
       return;
     }
 
     // 如果 Bot leave 後又未加入語音頻道
     if (this.connection[guildID].status === 4) {
-      msg.channel.send('請先將機器人 `!!join` 重新加入頻道');
+      msg.channel.send(`請先將機器人 ${prefix}join 重新加入頻道`);
       return;
     }
 
