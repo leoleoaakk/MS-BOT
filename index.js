@@ -73,7 +73,7 @@ let msging = true;
 client.on("ready", () => {
   client.login(token);
   console.log(`Logged in as ${client.user.tag}!`)
-  client.user.setActivity("輸入help");
+  client.user.setActivity("輸入help !寶可夢指令");
   //console.log(client.channels.cache.get("418076288625016834").send("login...."));
 })
 
