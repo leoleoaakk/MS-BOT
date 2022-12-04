@@ -170,23 +170,23 @@ async function searchBaseStats(keywords){
       let i= 0;
       let q=[];
       let index_top="";
-      let formChangeData=data;
+      let styleData=data;
       let index_bottom="";
-      let formChangeType=[];
+      let styleType=[];
       let t="";
       while(blank<20){
-          index_top=formChangeData.search(`<div class="tabbertab" title="`)+30;
-          formChangeData=formChangeData.substr(index_top);
-          index_bottom = formChangeData.search(`">\n<table class="bg`);
+          index_top=styleData.search(`<div class="tabbertab" title="`)+30;
+          styleData=styleData.substr(index_top);
+          index_bottom = styleData.search(`">\n<table class="bg`);
           if(index_bottom < 100 && index_top != 29){  
-              formChangeType[i]= formChangeData.substr(0, index_bottom);
+              styleType[i]= styleData.substr(0, index_bottom);
               i++;
           }else{
               blank++;
           }
       }
-      if(formChangeType.length!=0){
-          for(let i=0;i<formChangeType.length;i++){
+      if(styleType.length!=0){
+          for(let i=0;i<styleType.length;i++){
               for(let j=0;j<7;j++){
                   index_top = data.search(`<div style="float:right">`)+25;
                   data = data.substr(index_top);
@@ -194,7 +194,7 @@ async function searchBaseStats(keywords){
                   let baseStats = data.substr(0, index_bottom);
                   q[j] = baseStats;
               }
-              t+=`${formChangeType[i]} => HP:${q[0]}, 攻擊:${q[1]}, 防禦:${q[2]}, 特攻:${q[3]}, 特防:${q[4]}, 速度:${q[5]}, 總和:${q[6]}\n`;
+              t+=`${styleType[i]} => HP:${q[0]}, 攻擊:${q[1]}, 防禦:${q[2]}, 特攻:${q[3]}, 特防:${q[4]}, 速度:${q[5]}, 總和:${q[6]}\n`;
           }
       }else{
           for(let i=0;i<7;i++){
@@ -241,65 +241,48 @@ async function searchAbility(keywords){
       let index_top="";
       let index_top_last="";
       let index_bottom="";
-      let formChangeData="";
-      let formChange=[];
-      //判斷該寶可夢有幾個型態變化
+      let styleData="";
+      let form=[];
+      //判斷該寶可夢有幾個樣子
       for(let i=0;i<6;i++){
           index_top=data.search(`_toggler_hide-form6">`)+21;
           index_top_last=data.search(`_toggler_show-form6">`)+21;
           if(index_top!=20){
               data=data.substr(index_top);
               index_bottom=data.search("\n</th></tr>");
-              formChangeData=data.substr(0,index_bottom);
-              if(formChangeData!="")
-                  formChange[i]=formChangeData;
+              styleData=data.substr(0,index_bottom);
+              if(styleData!="")
+                  form[i]=styleData;
           }else if(index_top_last!=20){
               data=data.substr(index_top_last);
               index_bottom=data.search("\n</th></tr>");
-              formChangeData=data.substr(0,index_bottom);
-              if(formChangeData!="")
-                  formChange[i]=formChangeData;
+              styleData=data.substr(0,index_bottom);
+              if(styleData!="")
+                  form[i]=styleData;
           }
       }
-      //如果有型態變化，就用迴圈把每個型態的特性都找出來
-      if(formChange.length!=0){
-          let title=`${keywords}有${formChange.length}種型態\n\n`;
-          let t="";
-          let t2="";
-          let abilityCheak=[];
-          let tempArray=[];
-          for(let i=0;i<formChange.length;i++){
-              let ability=[];
-              index_top=abilityData.search(`title="特性">特性</a></b>`)+25;
-              abilityData=abilityData.substr(index_top);
-              index_bottom=abilityData.search(`</td></tr></tbody></table>`);
-              let tempData=abilityData.substr(0,index_bottom);
-              index_top=tempData.search(`（特性）">`)+6;
-              let j=0;
-              do{
-                  tempData=tempData.substr(index_top);
-                  index_bottom=tempData.search(`</a>`);
-                  ability[j]=tempData.substr(0,index_bottom);
-                  tempArray[j]=tempData.substr(0,index_bottom);
-                  index_top=tempData.search(`（特性）">`)+6;
-                  j++;
-              }while(index_top!=5);
-              t=`${formChange[i]} 特性為`;
-              for(let i=0;i<ability.length;i++){
-                  t+=ability[i]+"、";
-              }
-              t2+=t.substring(0, t.length-1);
-              t2+="\n\n";
-              for(let i=0;i<ability.length;i++){
-                  //如果有重複，印一次就好
-                  let temp=await searchAbilityDetail(ability[i]);
-                  if(t2.search(temp)===-1)
-                      t2+=temp+"\n";
-              }
-              abilityCheak[i]=ability;
+      //如果有其他樣子，就用迴圈把每個樣子的特性都找出來
+      if(form.length!=0){
+          let ability=[];
+          for(let i=0;i<form.length;i++){
+            let tempA=[];
+            index_top=abilityData.search(`title="特性">特性</a></b>`)+25;
+            abilityData=abilityData.substr(index_top);
+            index_bottom=abilityData.search(`</td></tr></tbody></table>`);
+            let tempData=abilityData.substr(0,index_bottom);
+            index_top=tempData.search(`（特性）">`)+6;
+            let j=0;
+            do{
+                tempData=tempData.substr(index_top);
+                index_bottom=tempData.search(`</a>`);
+                tempA[j]=tempData.substr(0,index_bottom);
+                index_top=tempData.search(`（特性）">`)+6;
+                j++;
+            }while(index_top!=5);
+            ability[i]=tempA;
           }
-          return title+t2;
-      }//如果該寶可夢沒有型態變化，就只找一次特性
+          return [form,ability];
+      }//如果該寶可夢沒有其他樣子，就只找一次特性
       else{
           let ability=[];
           index_top=data.search(`title="特性">特性</a></b>`)+25;
@@ -315,16 +298,7 @@ async function searchAbility(keywords){
               index_top=data.search(`（特性）">`)+6;
               i++;
           }while(index_top!=5);
-          let t=`${keywords}的特性為`;
-          for(let i=0;i<ability.length;i++){
-              t+=ability[i]+"、";
-          }
-          let t2=t.substring(0, t.length-1);
-          t2+="\n\n";
-          for(let i=0;i<ability.length;i++){
-              t2+=await searchAbilityDetail(ability[i]);
-          }
-          return t2;
+          return [[keywords],[ability]];
       }
   }else
       return;
@@ -377,26 +351,23 @@ async function searchAbilityDetail(keywords){
       t+=tempData;
   }
   //把說明文裡面不必要的符號刪除
+  let t2="";
   for(let i=0;i<20;i++){
-      t=t.replace("\n","");
-      t=t.replace("<p>","");
-      t=t.replace("</p>","");
-      t=t.replace("<li>","");
-      t=t.replace("</li>","");
-      t=t.replace("<ul>","");
-      t=t.replace("</ul>","");
-      t=t.replace("<h3>","");
-      t=t.replace("<h2>","");
-      t=t.replace("</sup>&#8260;<sub>","/");
-      t=t.replace("</sub>","");
-      t=t.replace("<sup>","");
-      t=t.replace("</sup>","");
-      t=t.replace("<b>","");
-      t=t.replace("</b>","");
-      t=t.replace('<span class="t-绿宝石">E</span>',"（綠寶石）");
+    t=t.replace("\n","");
+    t=t.replace("<dl><dd>"," ");
+    t=t.replace("</sup>&#8260;<sub>","/");
+    t=t.replace('<span class="t-绿宝石">E</span>',"（綠寶石）");
+}
+  index_bottom=t.search("<");
+  while(index_bottom!=-1){
+    t2+=t.substring(0,index_bottom);
+    index_top=t.search(">")+1;
+    t=t.substring(index_top);
+    index_bottom=t.search("<");
   }
-  if(t!=""){
-      return `${keywords}的效果\n${t}\n\n`;
+
+  if(t2!=""){
+      return `${keywords}的效果\n${t2}\n\n`;
   }else
       return;
 }
@@ -658,7 +629,7 @@ client.on("message", async msg => {
     "!寶可夢+名稱　!編號+圖鑑編號　=>　查詢寶可夢基本資料\n"+
     "!屬性(屬性名稱1,屬性名稱2)　!屬性+單屬性　!屬性+寶可夢　=>　查詢屬性相剋\n"+
     "!種族值+寶可夢　=>　查詢種族值\n!捕獲率+寶可夢　=>　查詢捕獲率\n"+
-    "!特性+特性名稱　!特性+寶可夢　=>　查詢特性詳細資料（半成品）\n"+
+    "!特性+特性名稱　!特性+寶可夢　=>　查詢特性詳細資料\n"+
     "以上指令'+'符號僅是為了方便閱讀，輸入時請無視\n\n"+
     "抓取的資料來源：寶可夢百科(https://wiki.52poke.com/)\n以及 寶可夢官網(https://tw.portal-pokemon.com/)\n"+
     "如果有查不到最新第九世代資料的問題，代表官網還沒更新，所以沒有資料\n\n");
@@ -668,7 +639,79 @@ client.on("message", async msg => {
     let keywords=msg.content.replace("!特性","");
     let data=await searchAbility(keywords);
     if(data!=null){
-        msg.channel.send(data);
+        let t="";
+        let t2="";
+        if(data[0].length!=1)
+            t2=`${keywords}總共有${data[0].length}種樣子\n`;
+        let c=0;
+        let ability=[];
+        let countA=[];
+        for(let i=0;i<data[0].length;i++){
+            t=`${data[0][i]} 特性為`;
+            for(let j=0;j<data[1][i].length;j++){
+                t+=`${data[1][i][j]}、`;
+                if(ability.indexOf(data[1][i][j])===-1){
+                    ability[c]=data[1][i][j];
+                    countA[c]=`${c+1}`;
+                    c++;
+                }
+            }
+            t2+=t.substring(0, t.length-1);
+            t2+="\n";
+        }
+        msg.channel.send(t2);
+        const filter = (m) =>
+            m.author.id === msg.author.id && countA.indexOf(m.content)!=-1|| m.content==="exit";
+        t=`總共有${ability.length}種特性，輸入對應編號可取得詳細資訊，若超過30秒未回應將自動終止。也可輸入exit直接終止。\n`;
+        for(let i=0;i<ability.length;i++){
+            t+=`${countA[i]}:${ability[i]}｜`;
+        }
+        t+="exit:直接終止等待";
+        msg.channel.send(t);
+        const collector = msg.channel.createMessageCollector(filter, {max: 1, time: 30000});
+        collector.on("collect", async (msg2) => {
+            if(msg2.content==="1"){
+                let data=await searchAbilityDetail(ability[0]);
+                msg.channel.send(data);
+            }else if(msg2.content==="2"){
+                let data=await searchAbilityDetail(ability[1]);
+                msg.channel.send(data);
+            }else if(msg2.content==="3"){
+                let data=await searchAbilityDetail(ability[2]);
+                msg.channel.send(data);
+            }else if(msg2.content==="4"){
+                let data=await searchAbilityDetail(ability[3]);
+                msg.channel.send(data);
+            }else if(msg2.content==="5"){
+                let data=await searchAbilityDetail(ability[4]);
+                msg.channel.send(data);
+            }else if(msg2.content==="6"){
+                let data=await searchAbilityDetail(ability[5]);
+                msg.channel.send(data);
+            }else if(msg2.content==="7"){
+                let data=await searchAbilityDetail(ability[6]);
+                msg.channel.send(data);
+            }else if(msg2.content==="8"){
+                let data=await searchAbilityDetail(ability[7]);
+                msg.channel.send(data);
+            }else if(msg2.content==="9"){
+                let data=await searchAbilityDetail(ability[8]);
+                msg.channel.send(data);
+            }else if(msg2.content==="10"){
+                let data=await searchAbilityDetail(ability[9]);
+                msg.channel.send(data);
+            }else if(msg2.content==="exit")
+                collector.stop('exit');
+            else 
+                collector.stop('time');
+        });
+        collector.on("end", (collected, reason) => {
+            if ( reason === 'time') {
+                msg.channel.send("超過30秒，終止等待");
+            }else if(reason === 'exit')
+                msg.channel.send("直接終止");
+            //console.log("stop");
+        });
     }else{
         data=await searchAbilityDetail(keywords);
         if(data!=null)
@@ -772,11 +815,12 @@ client.on("message", async msg => {
         let styleData=await searchStyle(keywords);
         if(styleData!=null){
             const filter = (m) =>
-                m.author.id === msg.author.id && styleData[1].indexOf(m.content)!=-1;
-            let t=`這隻寶可夢還有${styleData[0].length-1}種型態，輸入對應編號可取得詳細資訊，若超過30秒未回應將自動終止。\n`;
+                m.author.id === msg.author.id && styleData[1].indexOf(m.content)!=-1 || m.content==="exit";
+            let t=`這隻寶可夢還有${styleData[0].length-1}種樣子，輸入對應編號可取得詳細資訊，若超過30秒未回應將自動終止。也可輸入exit直接終止。\n`;
             for(let i=1;i<styleData[0].length;i++){
-                t+=`${styleData[1][i]}:${styleData[0][i]} `;
+                t+=`${styleData[1][i]}:${styleData[0][i]}｜`;
             }
+            t+="exit:直接終止等待";
             msg.channel.send(t);
             const collector = msg.channel.createMessageCollector(filter, {max: 1, time: 30000});
             collector.on("collect", async (msg2) => {
@@ -795,13 +839,16 @@ client.on("message", async msg => {
                 }else if(msg2.content==="5"){
                     let data=await searchPokedexNumber(keywords+"_5");
                     msg.channel.send(data);
-                }else 
+                }else if(msg2.content==="exit")
+                    collector.stop('exit');
+                else
                     collector.stop('time');
             });
             collector.on("end", (collected, reason) => {
                 if ( reason === 'time') {
                     msg.channel.send("超過30秒，終止等待");
-                }
+                }else if(reason === 'exit')
+                    msg.channel.send("直接終止");
                 //console.log("stop");
             });
 
@@ -821,11 +868,12 @@ if(msg.content.includes("!寶可夢") && msg.content.includes("寶可夢相關�
         let styleData=await searchStyle(number);
         if(styleData!=null){
             const filter = (m) =>
-                m.author.id === msg.author.id && styleData[1].indexOf(m.content)!=-1;
-            let t=`這隻寶可夢還有${styleData[0].length-1}種型態，輸入對應編號可取得詳細資訊，若超過30秒未回應將自動終止。\n`;
+                m.author.id === msg.author.id && styleData[1].indexOf(m.content)!=-1|| m.content==="exit";
+            let t=`這隻寶可夢還有${styleData[0].length-1}種樣子，輸入對應編號可取得詳細資訊，若超過30秒未回應將自動終止。也可輸入exit直接終止。\n`;
             for(let i=1;i<styleData[0].length;i++){
-                t+=`${styleData[1][i]}:${styleData[0][i]} `;
+                t+=`${styleData[1][i]}:${styleData[0][i]}｜`;
             }
+            t+="exit:直接終止等待";
             msg.channel.send(t);
             const collector = msg.channel.createMessageCollector(filter, {max: 1, time: 30000});
             collector.on("collect", async (msg2) => {
@@ -844,13 +892,16 @@ if(msg.content.includes("!寶可夢") && msg.content.includes("寶可夢相關�
                 }else if(msg2.content==="5"){
                     let data=await searchPokedexNumber(number+"_5");
                     msg.channel.send(data);
-                }else 
+                }else if(msg2.content==="exit")
+                    collector.stop('exit');
+                else 
                     collector.stop('time');
             });
             collector.on("end", (collected, reason) => {
                 if ( reason === 'time') {
                     msg.channel.send("超過30秒，終止等待");
-                }
+                }else if(reason === 'exit')
+                    msg.channel.send("直接終止");
                 //console.log("stop");
             });
 
