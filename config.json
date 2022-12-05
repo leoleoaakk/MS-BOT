@@ -1,5 +1,5 @@
 {	
     "clientId": "0",
     "guildId": "0",
-    "prefix": "!!"
+    "prefix": ["!","!!"]
 }
