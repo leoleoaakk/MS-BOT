@@ -643,7 +643,17 @@ client.on("message", async msg => {
       msg.content = msg.content.replace(prefix[0], "");
 
       if (msg.content === "下北澤大天使") {
-        msg.channel.send("https://i.imgur.com/IxG6L62.gif");
+        let R = Math.random() * 4;
+        R = parseInt(R);
+        if (R === 1)
+          msg.channel.send("https://i.imgur.com/IxG6L62.gif");
+        else if (R === 0)
+          msg.channel.send("https://i.imgur.com/hGP2Pde.gif");
+        else if (R === 2)
+          msg.channel.send("https://i.imgur.com/ZR15pnR.gif");
+        else if (R === 3)
+          msg.channel.send("https://i.imgur.com/VGf05Bt.gif");
+
       }
 
       if (msg.content === "蒼彼") {
