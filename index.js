@@ -668,8 +668,8 @@ client.on("message", async msg => {
       }
 
       if (msg.content === "韓職") {
-        msg.channel.send(`Twitch: https://www.twitch.tv/kartrideresports`);
-        msg.channel.send(`Youtube: https://www.youtube.com/@kartrideresports`);
+        msg.channel.send(`Twitch: https://www.twitch.tv/kdl_kr`);
+        msg.channel.send(`Youtube: https://www.youtube.com/@KDL_KR`);
       }
 
       if (msg.content === "寶可夢指令") {
