@@ -672,32 +672,55 @@ client.on("message", async msg => {
         })
           .then(response => response.json())
           .then((result) => {
-            //console.log(result.Data.Rank);
             const Data = result.Data;
-            let GuildJudge="";
-            if(Data.Guild == "Y-獨孤求敗"){
-              GuildJudge="這個人是我們的好盟友";
+
+            //判斷是不是自己的公會
+            let GuildJudge = "";
+            if (Data.Guild == "Y-獨孤求敗") {
+              GuildJudge = "這個人是我們的好盟友";
             }
-            else{
-              GuildJudge="";
+            else {
+              GuildJudge = "";
             }
-            
+
+            //隨機邊框顏色
+            let colorStr = "#";
+            let r = Math.floor(Math.random() * 16);
+            for (let i = 0; i < 6; i++) {
+              if (r < 10)
+                colorStr += r;
+              else if (r == 10)
+                colorStr += "a";
+              else if (r == 11)
+                colorStr += "b";
+              else if (r == 12)
+                colorStr += "c";
+              else if (r == 13)
+                colorStr += "d";
+              else if (r == 14)
+                colorStr += "e";
+              else if (r == 15)
+                colorStr += "f";
+              r = Math.floor(Math.random() * 16);
+            }
+
+            //嵌入式訊息
             const exampleEmbed = new Discord.MessageEmbed()
-              .setColor('#0099ff')
+              .setColor(colorStr)
               .setTitle(Data.CharacterName)
               .setAuthor(Data.GameWorldName, Data.GameWorldImageUrl)
               .setDescription(GuildJudge)
               .setThumbnail(Data.CharacterLookUrl)
               .addFields(
-                { name: '等級', value: Data.UnionLevel,inline: true},
+                { name: '等級', value: Data.UnionLevel, inline: true },
                 { name: '職業', value: Data.JobName, inline: true },
-                { name: '公會', value: Data.Guild},
-                { name: '戰地等級', value: Data.UnionTotalLevel, inline: true},
-                { name: '戰鬥力', value: separator(Data.UnionDPS), inline: true},
-                { name: '戰地排行', value: Data.Rank},
+                { name: '公會', value: Data.Guild },
+                { name: '戰地等級', value: Data.UnionTotalLevel, inline: true },
+                { name: '戰鬥力', value: separator(Data.UnionDPS), inline: true },
+                { name: '戰地排行', value: Data.Rank },
               )
               .setTimestamp()
-              .setFooter('聯盟戰地排行','https://i.imgur.com/b6EUgCt.png');
+              .setFooter('聯盟戰地排行', 'https://i.imgur.com/b6EUgCt.png');
 
             console.log(result);
             msg.channel.send(exampleEmbed);
@@ -706,9 +729,6 @@ client.on("message", async msg => {
             console.error("Error:", error)
             msg.channel.send("查無此角色ID或該名角色ID未在10000名排行榜名單內");
           });
-        //.then(result => console.log(result))
-
-        //msg.channel.send("test中");
       }
 
       if (msg.content === "下北澤大天使") {
