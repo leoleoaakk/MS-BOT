@@ -73,7 +73,7 @@ let msging = true;
 client.on("ready", () => {
   client.login(token);
   console.log(`Logged in as ${client.user.tag}!`)
-  client.user.setActivity(`輸入help ${prefix[0]}寶可夢指令`);
+  client.user.setActivity(`輸入${prefix[0]}help 查詢各種指令`);
   //console.log(client.channels.cache.get("418076288625016834").send("login...."));
 })
 
@@ -648,6 +648,88 @@ client.on("message", async msg => {
     if (msg.content.substring(0, prefix[0].length) === prefix[0]) {
       msg.content = msg.content.replace(prefix[0], "");
 
+      if (msg.content === "help") {
+        const filter = (m) =>
+          m.author.id === msg.author.id || m.content === "exit";
+        let t = "目前機器人的功能共有以下幾種,輸入對應編號可以查看各功能詳細指令。若超過30秒未回應將自動終止，也可輸入exit直接終止。\n" +
+          "1: 楓之谷查價功能(已死)\n" +
+          "2: 播放YT音樂的簡易機器人\n" +
+          "3: 寶可夢指令\n" +
+          "4: 其他小功能\n" +
+          "exit:直接終止等待";
+        msg.channel.send(t);
+
+        const collector = msg.channel.createMessageCollector(filter, { max: 1, time: 30000 });
+        collector.on("collect", async (msg2) => {
+          let str = "";
+          switch (msg2.content) {
+            case '1':
+              msg.reply("wait for it 請使用下列指令才會有回復");
+              result = "";
+              result = input;
+              msg.channel.send("---------------------------");
+              msg.reply("機器人問題輸入  作者資訊");
+              msg.channel.send("---------------------------");
+              msg.reply("指令沒有的請打  !!(物品名稱,最大金額,最小金額) ");
+              msg.channel.send("---------------------------");
+              msg.channel.send("以下查詢歷史價格 可查詢物件有限");
+              msg.channel.send("可查詢物件:" + dblist);
+              msg.channel.send("查詢歷史價格  history(物件,yy,mm,dd,yy,mm,dd) ");
+              msg.channel.send("查詢歷史成交價格圖表  hischart(物件,yy,mm,dd,yy,mm,dd) ");
+              msg.channel.send("查詢歷史未成交價格圖表  currentchart(物件,yy,mm,dd,yy,mm,dd) ");
+              msg.channel.send("---------------------------");
+              msg.reply("以下指令直接輸入即可不用加符號，一次只能查一個")
+              msg.channel.send(result);
+              msg.channel.send("---------------------------");
+              msg.channel.send("有任何問題可以到巴哈留言");
+              msg.channel.send("https://forum.gamer.com.tw/C.php?bsn=7650&snA=1018172&tnum=2");
+              msg.channel.send("---------------------------");
+              msg.channel.send("機器人當掉輸入 !logout");
+              msg.channel.send("---------------------------");
+
+              msg.channel.send("相關事宜輸入 免責聲明");
+
+
+              result = "";
+              break;
+            case '2':
+              msg.channel.send(`${prefix[1]}join　=>　將機器人加入語音\n` +
+                `${prefix[1]}play 音樂網址　=>　播放音樂或是加入列隊\n` +
+                `${prefix[1]}pause　=>　暫停播放\n` +
+                `${prefix[1]}resume　=>　恢復播放\n` +
+                `${prefix[1]}skip　=>　跳過現在的歌曲\n` +
+                `${prefix[1]}queue　=>　查看歌曲隊列\n` +
+                `${prefix[1]}leave　=>　機器人離開語音頻道\n\n`);
+              break;
+            case '3':
+              msg.channel.send("以下為機器人支援的寶可夢相關指令\n" +
+                `${prefix[0]}寶可夢+名稱　${prefix[0]}編號+圖鑑編號　=>　查詢寶可夢基本資料\n` +
+                `${prefix[0]}屬性+屬性名稱1,屬性名稱2　${prefix[0]}屬性+單屬性　${prefix[0]}屬性+寶可夢　=>　查詢屬性相剋\n` +
+                `${prefix[0]}種族值+寶可夢　=>　查詢種族值\n${prefix[0]}捕獲率+寶可夢　=>　查詢捕獲率\n` +
+                `${prefix[0]}特性+特性名稱　${prefix[0]}特性+寶可夢　=>　查詢特性詳細資料\n` +
+                "以上指令'+'符號僅是為了方便閱讀，輸入時請無視\n\n" +
+                "抓取的資料來源：寶可夢百科(https://wiki.52poke.com/)\n以及 寶可夢官網(https://tw.portal-pokemon.com/)\n" +
+                "如果有查不到最新第九世代資料的問題，代表官網還沒更新，所以沒有資料\n\n");
+              break;
+            case '4':
+              msg.channel.send(`${prefix[0]}戰地 角色ID　=>　查詢TMS新楓之谷角色資訊及戰地排名\n` +
+                `${prefix[0]}曬卡　${prefix[0]}蒼彼　${prefix[0]}韓職　${prefix[0]}Aris\n`);
+              break;
+            case 'exit':
+              collector.stop('exit');
+              break;
+            default:
+              collector.stop('time');
+          }
+        });
+        collector.on("end", (collected, reason) => {
+          if (reason === 'time') {
+            msg.channel.send("超過30秒，終止等待");
+          } else if (reason === 'exit')
+            msg.channel.send("直接終止");
+          //console.log("stop");
+        });
+      }
 
       if (msg.content.includes("戰地 ")) {
         msg.content = msg.content.replace("戰地 ", "");
@@ -731,6 +813,30 @@ client.on("message", async msg => {
           });
       }
 
+      if (msg.content === "Aris") {
+        let R = Math.floor(Math.random() * 9);
+        R = parseInt(R);
+        if (R === 0)
+          msg.channel.send("https://media1.tenor.com/m/BjPnBRcCPwcAAAAd/arisu-aris.gif");
+        else if (R === 1)
+          msg.channel.send("https://media1.tenor.com/m/GsRRxufjC1EAAAAC/arisu-alice.gif");
+        else if (R === 2)
+          msg.channel.send("https://media1.tenor.com/m/JyHMlpMxRKwAAAAC/arisbm.gif");
+        else if (R === 3)
+          msg.channel.send("https://media1.tenor.com/m/1p2LS_qMotYAAAAC/arisu-scared.gif");
+        else if (R === 4)
+          msg.channel.send("https://media1.tenor.com/m/96m6Vv9m_kIAAAAd/arisu-maid.gif");
+        else if (R === 5)
+          msg.channel.send("https://media1.tenor.com/m/8V5V_q7X1TsAAAAC/arisu-aris.gif");
+        else if (R === 6)
+          msg.channel.send("https://media1.tenor.com/m/Rw8RS3ysbKAAAAAC/blue-archive-alice-tendou.gif");
+        else if (R === 7)
+          msg.channel.send("https://media.tenor.com/oA5ClfmykW8AAAAi/alice-aris.gif");
+        else if (R === 8)
+          msg.channel.send("https://media1.tenor.com/m/JqbC4quHIVAAAAAd/arisu-tendo-arisu.gif");
+
+      }
+
       if (msg.content === "下北澤大天使") {
         let R = Math.random() * 4;
         R = parseInt(R);
@@ -761,7 +867,7 @@ client.on("message", async msg => {
         msg.channel.send(`Youtube: https://www.youtube.com/@KDL_KR`);
       }
 
-      if (msg.content === "寶可夢指令") {
+      /*if (msg.content === "寶可夢指令") {
         msg.channel.send("以下為機器人支援的寶可夢相關指令\n" +
           `${prefix[0]}寶可夢+名稱　${prefix[0]}編號+圖鑑編號　=>　查詢寶可夢基本資料\n` +
           `${prefix[0]}屬性+屬性名稱1,屬性名稱2　${prefix[0]}屬性+單屬性　${prefix[0]}屬性+寶可夢　=>　查詢屬性相剋\n` +
@@ -770,7 +876,7 @@ client.on("message", async msg => {
           "以上指令'+'符號僅是為了方便閱讀，輸入時請無視\n\n" +
           "抓取的資料來源：寶可夢百科(https://wiki.52poke.com/)\n以及 寶可夢官網(https://tw.portal-pokemon.com/)\n" +
           "如果有查不到最新第九世代資料的問題，代表官網還沒更新，所以沒有資料\n\n");
-      }
+      }*/
 
       if (msg.content.includes("特性")) {
         let keywords = msg.content.replace("特性", "");
@@ -2277,7 +2383,7 @@ client.on("message", async msg => {
     }
 
 
-    if (msg.content === "help") {
+    /*if (msg.content === "help") {
       msg.reply("wait for it 請使用下列指令才會有回復");
       result = "";
       result = input;
@@ -2306,7 +2412,7 @@ client.on("message", async msg => {
 
       result = "";
 
-    }
+    }*/
     if (msg.content === "作者資訊") {
 
 
@@ -3269,6 +3375,8 @@ const music = new Music();
 
 // 當 Bot 接收到訊息時的事件
 client.on('message', async (msg) => {
+
+  if (msg.member.user.bot) return;
 
   // 如果發送訊息的地方不是語音群（可能是私人），就 return
   if (!msg.guild) return;
