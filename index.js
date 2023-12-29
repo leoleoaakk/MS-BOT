@@ -633,6 +633,12 @@ async function getTypeName(keywords) {
     return;
 }
 
+function separator(numb) {
+  var str = numb.toString().split('.');
+  str[0] = str[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return str.join('.');
+}
+
 
 client.on("message", async msg => {
 
@@ -641,6 +647,69 @@ client.on("message", async msg => {
   try {
     if (msg.content.substring(0, prefix[0].length) === prefix[0]) {
       msg.content = msg.content.replace(prefix[0], "");
+
+
+      if (msg.content.includes("戰地 ")) {
+        msg.content = msg.content.replace("戰地 ", "");
+        let keywords = msg.content;
+        const url = "https://tw-event.beanfun.com/MapleStory/api/UnionWebRank/GetRank";
+
+
+        // 要發送的參數
+        const data = {
+          RankType: 3,
+          GameWorldId: "-1",
+          CharacterName: keywords
+        };
+
+        // 發送POST請求
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => response.json())
+          .then((result) => {
+            //console.log(result.Data.Rank);
+            const Data = result.Data;
+            let GuildJudge="";
+            if(Data.Guild == "Y-獨孤求敗"){
+              GuildJudge="這個人是我們的好盟友";
+            }
+            else{
+              GuildJudge="";
+            }
+            
+            const exampleEmbed = new Discord.MessageEmbed()
+              .setColor('#0099ff')
+              .setTitle(Data.CharacterName)
+              .setAuthor(Data.GameWorldName, Data.GameWorldImageUrl)
+              .setDescription(GuildJudge)
+              .setThumbnail(Data.CharacterLookUrl)
+              .addFields(
+                { name: '等級', value: Data.UnionLevel,inline: true},
+                { name: '職業', value: Data.JobName, inline: true },
+                { name: '公會', value: Data.Guild},
+                { name: '戰地等級', value: Data.UnionTotalLevel, inline: true},
+                { name: '戰鬥力', value: separator(Data.UnionDPS), inline: true},
+                { name: '戰地排行', value: Data.Rank},
+              )
+              .setTimestamp()
+              .setFooter('聯盟戰地排行');
+
+            console.log(result);
+            msg.channel.send(exampleEmbed);
+          })
+          .catch((error) => {
+            console.error("Error:", error)
+            msg.channel.send("查無此角色ID或該名角色ID未在10000名排行榜名單內");
+          });
+        //.then(result => console.log(result))
+
+        //msg.channel.send("test中");
+      }
 
       if (msg.content === "下北澤大天使") {
         let R = Math.random() * 4;
