@@ -697,7 +697,7 @@ client.on("message", async msg => {
                 { name: '戰地排行', value: Data.Rank},
               )
               .setTimestamp()
-              .setFooter('聯盟戰地排行');
+              .setFooter('聯盟戰地排行','https://i.imgur.com/b6EUgCt.png');
 
             console.log(result);
             msg.channel.send(exampleEmbed);
